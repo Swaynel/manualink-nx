@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function Testimonials() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
@@ -6,7 +7,7 @@ export default function Testimonials() {
 
   const testimonials = [
     {
-      quote: "ManuaLink helped me find consistent construction work in Nairobi. I've been able to support my family better since joining!",
+      quote: "ManuaLink helped me find consistent construction work in Nairobi. I&apos;ve been able to support my family better since joining!",
       author: "Felix K.",
       role: "Construction Worker, Nairobi",
       image: "/image/testimonial1.jpg"
@@ -70,9 +71,18 @@ export default function Testimonials() {
               key={index} 
               className={`testimonial ${index === currentTestimonialIndex ? 'active' : ''}`}
             >
-              <div className="quote">"{testimonial.quote}"</div>
+              <div
+                className="quote"
+                dangerouslySetInnerHTML={{ __html: testimonial.quote }}
+              />
               <div className="author">
-                <img src={testimonial.image} alt={`${testimonial.author}, ${testimonial.role}`} />
+                <Image
+                  src={testimonial.image}
+                  alt={`${testimonial.author}, ${testimonial.role}`}
+                  width={80}
+                  height={80}
+                  className="rounded-full object-cover"
+                />
                 <div>
                   <h4>{testimonial.author}</h4>
                   <p>{testimonial.role}</p>

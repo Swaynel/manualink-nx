@@ -5,7 +5,10 @@ export default function About() {
     <>
       <Head>
         <title>About Us - ManuaLink</title>
-        <meta name="description" content="Learn about ManuaLink's mission to connect Kenyan workers with employment opportunities." />
+        <meta
+          name="description"
+          content="Learn about ManuaLink&apos;s mission to connect Kenyan workers with employment opportunities."
+        />
       </Head>
 
       <div className="section-padding bg-gray-50 min-h-screen">
@@ -14,7 +17,7 @@ export default function About() {
           <div className="text-center mb-12">
             <h1 className="text-3xl font-bold mb-4">About ManuaLink</h1>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Connecting skilled Kenyan workers with employers who need them. Our mission is to create opportunities and support Kenya's workforce.
+              Connecting skilled Kenyan workers with employers who need them. Our mission is to create opportunities and support Kenya&apos;s workforce.
             </p>
           </div>
           
@@ -37,7 +40,7 @@ export default function About() {
               </div>
               <h2 className="text-xl font-semibold mb-3">Our Vision</h2>
               <p className="text-gray-600">
-                To become Kenya's leading platform for manual work connections, empowering thousands of workers
+                To become Kenya&apos;s leading platform for manual work connections, empowering thousands of workers
                 and transforming how businesses find skilled labor.
               </p>
             </div>
@@ -54,7 +57,7 @@ export default function About() {
                 Our founders witnessed firsthand the challenges faced by both workers seeking consistent employment and employers struggling to find qualified, reliable help for construction, farming, cleaning, and other manual work.
               </p>
               <p>
-                Today, we're proud to have built a platform that serves thousands of Kenyans, helping them find work opportunities and build better lives for themselves and their families.
+                Today, we&apos;re proud to have built a platform that serves thousands of Kenyans, helping them find work opportunities and build better lives for themselves and their families.
               </p>
             </div>
           </div>
@@ -69,7 +72,7 @@ export default function About() {
                   <i className="fas fa-user text-4xl text-gray-500"></i>
                 </div>
                 <h3 className="font-semibold mb-1">John Kamau</h3>
-                <p className="text-blue-600 text-sm mb-2">Founder & CEO</p>
+                <p className="text-blue-600 text-sm mb-2">Founder &amp; CEO</p>
                 <p className="text-gray-600 text-sm">Experienced entrepreneur with a passion for economic empowerment.</p>
               </div>
               

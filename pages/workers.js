@@ -254,7 +254,7 @@ export default function Workers() {
                   <span className="text-blue-600 font-bold text-xl">2</span>
                 </div>
                 <h3 className="font-semibold mb-2">Contact Directly</h3>
-                <p className="text-gray-600">Reach out to workers you're interested in to discuss your project details and requirements.</p>
+                <p className="text-gray-600">Reach out to workers you are interested in to discuss your project details and requirements.</p>
               </div>
               
               <div className="text-center">

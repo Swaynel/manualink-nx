@@ -38,14 +38,19 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us - ManuaLink</title>
-        <meta name="description" content="Get in touch with ManuaLink for support, questions, or partnership opportunities." />
+        <meta
+          name="description"
+          content="Get in touch with ManuaLink for support, questions, or partnership opportunities."
+        />
       </Head>
 
       <div className="section-padding bg-gray-50 min-h-screen">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold text-center mb-2">Contact Us</h1>
-            <p className="text-gray-600 text-center mb-8">We'd love to hear from you. Get in touch with our team.</p>
+            <p className="text-gray-600 text-center mb-8">
+              We&apos;d love to hear from you. Get in touch with our team.
+            </p>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Contact Information */}
@@ -120,7 +125,7 @@ export default function Contact() {
                 
                 {submitStatus === 'success' && (
                   <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    <p>Thank you for your message! We'll get back to you soon.</p>
+                    <p>Thank you for your message! We&apos;ll get back to you soon.</p>
                   </div>
                 )}
                 

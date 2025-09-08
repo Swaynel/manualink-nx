@@ -5,7 +5,9 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-about">
             <h3>ManuaLink</h3>
-            <p>Connecting skilled Kenyan workers with employers who need them. Our mission is to create opportunities and support Kenya's workforce.</p>
+            <p>
+              Connecting skilled Kenyan workers with employers who need them. Our mission is to create opportunities and support Kenya&apos;s workforce.
+            </p>
             <div className="social-icons">
               <a href="#" aria-label="Follow us on Facebook"><i className="fab fa-facebook"></i></a>
               <a href="#" aria-label="Follow us on Twitter"><i className="fab fa-twitter"></i></a>

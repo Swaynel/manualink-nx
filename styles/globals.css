@@ -1,3 +1,9 @@
+@import "tailwindcss";
+
+/* Where to scan for classnames */
+@reference "pages/**/*.{js,ts,jsx,tsx,mdx}";
+@reference "components/**/*.{js,ts,jsx,tsx,mdx}";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
