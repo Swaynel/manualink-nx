@@ -100,14 +100,23 @@ export default function Header({ currentUser, setActiveModal }) {
         </nav>
       </div>
 
-      {/* Slide-in Sidebar */}
-      <div
-        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 z-50 ${
+      {/* Backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-40 transition-opacity"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        ></div>
+      )}
+
+      {/* Slide-in Glass-like Sidebar */}
+      <aside
+        className={`fixed top-0 right-0 h-full w-64 bg-white/30 backdrop-blur-md shadow-lg transform transition-transform duration-300 z-50 ${
           mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold text-blue-600">Menu</h2>
+          <h2 className="text-xl font-bold text-gray-800">Menu</h2>
           <button
             className="text-2xl"
             onClick={() => setMobileMenuOpen(false)}
@@ -116,13 +125,14 @@ export default function Header({ currentUser, setActiveModal }) {
             <i className="fas fa-times"></i>
           </button>
         </div>
+
         <ul className="flex flex-col p-4 space-y-4">
           {navItems.map((item) => (
             <li key={item.path}>
               <Link
                 href={item.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block text-gray-700 hover:text-blue-600 font-medium transition ${
+                className={`block text-gray-800 hover:text-blue-600 font-medium transition ${
                   isActive(item.path) ? 'text-blue-600' : ''
                 }`}
               >
@@ -130,12 +140,13 @@ export default function Header({ currentUser, setActiveModal }) {
               </Link>
             </li>
           ))}
+
           {currentUser && (
             <li>
               <Link
                 href="/profile"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block text-gray-700 hover:text-blue-600 font-medium transition ${
+                className={`block text-gray-800 hover:text-blue-600 font-medium transition ${
                   isActive('/profile') ? 'text-blue-600' : ''
                 }`}
               >
@@ -143,6 +154,7 @@ export default function Header({ currentUser, setActiveModal }) {
               </Link>
             </li>
           )}
+
           {!currentUser && (
             <>
               <button
@@ -160,16 +172,7 @@ export default function Header({ currentUser, setActiveModal }) {
             </>
           )}
         </ul>
-      </div>
-
-      {/* Backdrop */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-40"
-          onClick={() => setMobileMenuOpen(false)}
-          aria-hidden="true"
-        ></div>
-      )}
+      </aside>
     </header>
   );
 }
