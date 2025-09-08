@@ -144,7 +144,7 @@ export default function Modals({ activeModal, setActiveModal }) {
               {loading ? 'Logging in...' : 'Login'}
             </button>
             <p className="text-sm text-center">
-              Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
               <button
                 type="button"
                 className="text-blue-600 hover:underline"
