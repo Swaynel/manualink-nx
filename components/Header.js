@@ -100,18 +100,18 @@ export default function Header({ currentUser, setActiveModal }) {
         </nav>
       </div>
 
-      {/* Backdrop */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/30 z-40 transition-opacity"
-          onClick={() => setMobileMenuOpen(false)}
-          aria-hidden="true"
-        ></div>
-      )}
+      {/* Backdrop with smooth fade */}
+      <div
+        className={`fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 z-40 ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setMobileMenuOpen(false)}
+        aria-hidden="true"
+      ></div>
 
       {/* Slide-in Glass-like Sidebar */}
       <aside
-        className={`fixed top-0 right-0 h-full w-64 bg-white/30 backdrop-blur-md shadow-lg transform transition-transform duration-300 z-50 ${
+        className={`fixed top-0 right-0 h-full w-64 bg-white/30 backdrop-blur-md shadow-xl transform transition-transform duration-300 z-50 ${
           mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
