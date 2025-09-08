@@ -3,13 +3,15 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
-export default function Modals() {
-  const [activeModal, setActiveModal] = useState(null);
+export default function Modals({ activeModal, setActiveModal }) {
+  const [loading, setLoading] = useState(false);
 
   const closeModal = () => setActiveModal(null);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData(e.target);
     const userType = formData.get('userType');
     const name = formData.get('registerName');
@@ -20,6 +22,7 @@ export default function Modals() {
 
     if (password !== confirmPassword) {
       alert('Passwords do not match');
+      setLoading(false);
       return;
     }
 
@@ -40,7 +43,7 @@ export default function Modals() {
         skills: [],
         savedJobs: [],
         alertSubscriptions: [],
-        createdAt: new Date()
+        createdAt: new Date(),
       };
 
       if (userType === 'worker') {
@@ -51,215 +54,188 @@ export default function Modals() {
           certifications: [],
           rating: null,
           location: null,
-          hourlyRate: null
+          hourlyRate: null,
         };
       }
 
       await setDoc(doc(db, 'users', user.uid), userData);
+      alert('Registration successful!');
       closeModal();
     } catch (error) {
       console.error('Registration error:', error);
       alert(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData(e.target);
     const email = formData.get('loginEmail');
     const password = formData.get('loginPassword');
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      alert('Login successful!');
       closeModal();
     } catch (error) {
       console.error('Login error:', error);
       alert(error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Modal component
+  const ModalWrapper = ({ children }) => (
+    <div
+      className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity ${
+        activeModal ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+      }`}
+      onClick={closeModal}
+    >
+      <div
+        className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold"
+          onClick={closeModal}
+          aria-label="Close modal"
+        >
+          ×
+        </button>
+        {children}
+      </div>
+    </div>
+  );
 
   return (
     <>
       {/* Login Modal */}
-      <div
-        className={`modal ${activeModal === 'login' ? 'active' : ''}`}
-        id="loginModal"
-        aria-hidden="true"
-        role="dialog"
-      >
-        <div className="modal-content">
-          <span
-            className="close-modal"
-            onClick={closeModal}
-            aria-label="Close login modal"
-          >
-            ×
-          </span>
-          <h2>Login to Your Account</h2>
-          <form id="loginForm" onSubmit={handleLogin}>
-            <div className="form-group">
-              <label htmlFor="loginEmail">Phone Number or Email</label>
-              <input
-                type="text"
-                id="loginEmail"
-                name="loginEmail"
-                required
-                aria-required="true"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="loginPassword">Password</label>
-              <input
-                type="password"
-                id="loginPassword"
-                name="loginPassword"
-                required
-                aria-required="true"
-              />
-            </div>
-            <div className="form-options">
-              <label>
-                <input type="checkbox" aria-label="Remember me" /> Remember me
-              </label>
-              <a href="#">Forgot password?</a>
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Login
+      {activeModal === 'login' && (
+        <ModalWrapper>
+          <h2 className="text-2xl font-semibold mb-4">Login to Your Account</h2>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <input
+              type="text"
+              name="loginEmail"
+              placeholder="Phone or Email"
+              required
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="password"
+              name="loginPassword"
+              placeholder="Password"
+              required
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="submit"
+              className={`w-full py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              disabled={loading}
+            >
+              {loading ? 'Logging in...' : 'Login'}
             </button>
-            <div className="form-footer">
-              <p>
-                Don&apos;t have an account?{' '}
-                <a
-                  href="#"
-                  onClick={() => setActiveModal('register')}
-                  className="switch-to-register"
-                >
-                  Register
-                </a>
-              </p>
-            </div>
+            <p className="text-sm text-center">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                className="text-blue-600 hover:underline"
+                onClick={() => setActiveModal('register')}
+              >
+                Register
+              </button>
+            </p>
           </form>
-        </div>
-      </div>
+        </ModalWrapper>
+      )}
 
-      {/* Registration Modal */}
-      <div
-        className={`modal ${activeModal === 'register' ? 'active' : ''}`}
-        id="registerModal"
-        aria-hidden="true"
-        role="dialog"
-      >
-        <div className="modal-content">
-          <span
-            className="close-modal"
-            onClick={closeModal}
-            aria-label="Close register modal"
-          >
-            ×
-          </span>
-          <h2>Create an Account</h2>
-          <form id="registerForm" onSubmit={handleRegister}>
-            <div className="form-group">
-              <label>I am a:</label>
-              <div className="radio-group">
-                <label>
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="worker"
-                    defaultChecked
-                    aria-label="Register as worker"
-                  />{' '}
-                  Worker
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="employer"
-                    aria-label="Register as employer"
-                  />{' '}
-                  Employer
-                </label>
-              </div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="registerName">Full Name</label>
-              <input
-                type="text"
-                id="registerName"
-                name="registerName"
-                required
-                aria-required="true"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="registerPhone">
-                Phone Number (e.g., +254123456789)
+      {/* Register Modal */}
+      {activeModal === 'register' && (
+        <ModalWrapper>
+          <h2 className="text-2xl font-semibold mb-4">Create an Account</h2>
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div className="flex space-x-4">
+              <label className="flex items-center space-x-2">
+                <input type="radio" name="userType" value="worker" defaultChecked /> Worker
               </label>
-              <input
-                type="tel"
-                id="registerPhone"
-                name="registerPhone"
-                required
-                aria-required="true"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="registerEmail">Email (Optional)</label>
-              <input type="email" id="registerEmail" name="registerEmail" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="registerPassword">Password</label>
-              <input
-                type="password"
-                id="registerPassword"
-                name="registerPassword"
-                required
-                aria-required="true"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="registerConfirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                id="registerConfirmPassword"
-                name="registerConfirmPassword"
-                required
-                aria-required="true"
-              />
-            </div>
-            <div className="form-group">
-              <label>
-                <input
-                  type="checkbox"
-                  required
-                  aria-label="Agree to terms and privacy policy"
-                />{' '}
-                I agree to the <a href="#">Terms of Service</a> and{' '}
-                <a href="#">Privacy Policy</a>
+              <label className="flex items-center space-x-2">
+                <input type="radio" name="userType" value="employer" /> Employer
               </label>
             </div>
-            <button type="submit" className="btn btn-primary">
-              Register
+            <input
+              type="text"
+              name="registerName"
+              placeholder="Full Name"
+              required
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="tel"
+              name="registerPhone"
+              placeholder="Phone Number"
+              required
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="email"
+              name="registerEmail"
+              placeholder="Email (Optional)"
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="password"
+              name="registerPassword"
+              placeholder="Password"
+              required
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="password"
+              name="registerConfirmPassword"
+              placeholder="Confirm Password"
+              required
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <label className="flex items-center space-x-2 text-sm">
+              <input type="checkbox" required /> I agree to the{' '}
+              <a href="#" className="text-blue-600 hover:underline">
+                Terms
+              </a>{' '}
+              and{' '}
+              <a href="#" className="text-blue-600 hover:underline">
+                Privacy Policy
+              </a>
+            </label>
+            <button
+              type="submit"
+              className={`w-full py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              disabled={loading}
+            >
+              {loading ? 'Registering...' : 'Register'}
             </button>
-            <div className="form-footer">
-              <p>
-                Already have an account?{' '}
-                <a
-                  href="#"
-                  onClick={() => setActiveModal('login')}
-                  className="switch-to-login"
-                >
-                  Login
-                </a>
-              </p>
-            </div>
+            <p className="text-sm text-center">
+              Already have an account?{' '}
+              <button
+                type="button"
+                className="text-blue-600 hover:underline"
+                onClick={() => setActiveModal('login')}
+              >
+                Login
+              </button>
+            </p>
           </form>
-        </div>
-      </div>
-
-      {/* Other modals can be added similarly */}
+        </ModalWrapper>
+      )}
     </>
   );
 }

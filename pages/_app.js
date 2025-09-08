@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import Layout from '../components/Layout';
+import Modals from '../components/Modals';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeModal, setActiveModal] = useState(null); // modal state lifted
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -27,7 +29,9 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <Layout currentUser={currentUser}>
+    <Layout currentUser={currentUser} setActiveModal={setActiveModal}>
+      {/* Modals shared across the app */}
+      <Modals activeModal={activeModal} setActiveModal={setActiveModal} />
       <Component {...pageProps} currentUser={currentUser} />
     </Layout>
   );
