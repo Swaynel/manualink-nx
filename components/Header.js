@@ -31,9 +31,7 @@ export default function Header({ currentUser, setActiveModal }) {
           {/* Logo */}
           <Link href="/" className="flex flex-col">
             <h1 className="text-2xl font-bold text-blue-600">ManuaLink</h1>
-            <p className="text-sm text-gray-500">
-              Connecting Kenyan workers with opportunities
-            </p>
+            <p className="text-sm text-gray-500">Connecting Kenyan workers with opportunities</p>
           </Link>
 
           {/* Desktop Navigation */}
@@ -93,64 +91,85 @@ export default function Header({ currentUser, setActiveModal }) {
             {/* Mobile Menu Button */}
             <button
               className="md:hidden text-2xl ml-2"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle mobile menu"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open mobile menu"
             >
-              <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+              <i className="fas fa-bars"></i>
             </button>
           </div>
         </nav>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white shadow-md rounded-b-lg mt-2">
-            <ul className="flex flex-col p-4 space-y-4">
-              {navItems.map((item) => (
-                <li key={item.path}>
-                  <Link
-                    href={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`block text-gray-700 hover:text-blue-600 font-medium transition ${
-                      isActive(item.path) ? 'text-blue-600' : ''
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              {currentUser && (
-                <li>
-                  <Link
-                    href="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`block text-gray-700 hover:text-blue-600 font-medium transition ${
-                      isActive('/profile') ? 'text-blue-600' : ''
-                    }`}
-                  >
-                    Profile
-                  </Link>
-                </li>
-              )}
-              {!currentUser && (
-                <li className="flex flex-col space-y-2 mt-2">
-                  <button
-                    className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
-                    onClick={() => { setActiveModal('login'); setMobileMenuOpen(false); }}
-                  >
-                    Login
-                  </button>
-                  <button
-                    className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition"
-                    onClick={() => { setActiveModal('register'); setMobileMenuOpen(false); }}
-                  >
-                    Register
-                  </button>
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
       </div>
+
+      {/* Slide-in Sidebar */}
+      <div
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 z-50 ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="flex justify-between items-center p-4 border-b">
+          <h2 className="text-xl font-bold text-blue-600">Menu</h2>
+          <button
+            className="text-2xl"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close mobile menu"
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+        <ul className="flex flex-col p-4 space-y-4">
+          {navItems.map((item) => (
+            <li key={item.path}>
+              <Link
+                href={item.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block text-gray-700 hover:text-blue-600 font-medium transition ${
+                  isActive(item.path) ? 'text-blue-600' : ''
+                }`}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+          {currentUser && (
+            <li>
+              <Link
+                href="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block text-gray-700 hover:text-blue-600 font-medium transition ${
+                  isActive('/profile') ? 'text-blue-600' : ''
+                }`}
+              >
+                Profile
+              </Link>
+            </li>
+          )}
+          {!currentUser && (
+            <>
+              <button
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition w-full"
+                onClick={() => { setActiveModal('login'); setMobileMenuOpen(false); }}
+              >
+                Login
+              </button>
+              <button
+                className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition w-full"
+                onClick={() => { setActiveModal('register'); setMobileMenuOpen(false); }}
+              >
+                Register
+              </button>
+            </>
+          )}
+        </ul>
+      </div>
+
+      {/* Backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 z-40"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        ></div>
+      )}
     </header>
   );
 }
