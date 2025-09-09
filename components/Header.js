@@ -19,7 +19,7 @@ export default function Header({ currentUser, setActiveModal }) {
     { path: '/jobs', label: 'Find Jobs' },
     { path: '/workers', label: 'Find Workers' },
     { path: '/about', label: 'About' },
-    { path: '/contact', label: 'Contact' },
+    { path: '/contacts', label: 'Contact' },
   ];
 
   const isActive = (path) => router.pathname === path;
