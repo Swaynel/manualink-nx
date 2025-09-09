@@ -1,12 +1,28 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 export default function Modals({ activeModal, setActiveModal }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const closeModal = () => setActiveModal(null);
+
+  // Redirect user to their dashboard
+  const redirectUser = async (uid) => {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', uid));
+      if (!userDoc.exists()) return;
+
+      const { userType } = userDoc.data();
+      if (userType === 'employer') router.push('/employer-dashboard');
+      else router.push('/worker-dashboard');
+    } catch (error) {
+      console.error('Redirect error:', error);
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -32,8 +48,8 @@ export default function Modals({ activeModal, setActiveModal }) {
         email || `${phone}@manualink.com`,
         password
       );
-
       const user = userCredential.user;
+
       const userData = {
         userType,
         name,
@@ -59,8 +75,9 @@ export default function Modals({ activeModal, setActiveModal }) {
       }
 
       await setDoc(doc(db, 'users', user.uid), userData);
-      alert('Registration successful!');
+      alert('Registration successful! Redirecting...');
       closeModal();
+      redirectUser(user.uid);
     } catch (error) {
       console.error('Registration error:', error);
       alert(error.message);
@@ -78,9 +95,10 @@ export default function Modals({ activeModal, setActiveModal }) {
     const password = formData.get('loginPassword');
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert('Login successful!');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      alert('Login successful! Redirecting...');
       closeModal();
+      redirectUser(userCredential.user.uid);
     } catch (error) {
       console.error('Login error:', error);
       alert(error.message);
@@ -89,7 +107,7 @@ export default function Modals({ activeModal, setActiveModal }) {
     }
   };
 
-  // Modal component
+  // Modal wrapper
   const ModalWrapper = ({ children }) => (
     <div
       className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity ${
@@ -144,7 +162,7 @@ export default function Modals({ activeModal, setActiveModal }) {
               {loading ? 'Logging in...' : 'Login'}
             </button>
             <p className="text-sm text-center">
-            Don&apos;t have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button
                 type="button"
                 className="text-blue-600 hover:underline"
