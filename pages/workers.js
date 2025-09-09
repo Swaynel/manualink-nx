@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { collection, getDocs, query, where, orderBy, startAfter, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -19,44 +19,50 @@ export default function Workers() {
 
   const WORKERS_PER_PAGE = 6;
 
-  const fetchWorkers = async (loadMore = false) => {
-    try {
-      if (!loadMore) setLoading(true);
-      else setLoadingMore(true);
+  // Fetch workers function wrapped in useCallback
+  const fetchWorkers = useCallback(
+    async (loadMore = false) => {
+      try {
+        if (!loadMore) setLoading(true);
+        else setLoadingMore(true);
 
-      let constraints = [where('userType', '==', 'worker')];
+        let constraints = [where('userType', '==', 'worker')];
 
-      if (filters.sort === 'rating') constraints.push(orderBy('profile.rating', 'desc'));
-      if (filters.sort === 'experience') constraints.push(orderBy('profile.experience', 'desc'));
-      if (loadMore && lastDoc) constraints.push(startAfter(lastDoc));
-      constraints.push(limit(WORKERS_PER_PAGE));
+        if (filters.sort === 'rating') constraints.push(orderBy('profile.rating', 'desc'));
+        if (filters.sort === 'experience') constraints.push(orderBy('profile.experience', 'desc'));
+        if (loadMore && lastDoc) constraints.push(startAfter(lastDoc));
+        constraints.push(limit(WORKERS_PER_PAGE));
 
-      const workersQuery = query(collection(db, 'users'), ...constraints);
-      const snapshot = await getDocs(workersQuery);
-      const workersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const workersQuery = query(collection(db, 'users'), ...constraints);
+        const snapshot = await getDocs(workersQuery);
 
-      setLastDoc(snapshot.docs[snapshot.docs.length - 1] || lastDoc);
+        const workersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setLastDoc(snapshot.docs[snapshot.docs.length - 1] || lastDoc);
 
-      let filtered = workersData;
-      if (filters.skill !== 'all') filtered = filtered.filter(w => w.profile?.skills?.includes(filters.skill));
-      if (filters.experience !== 'all') filtered = filtered.filter(w => w.profile?.experience === filters.experience);
-      if (filters.location !== 'all') filtered = filtered.filter(w => w.profile?.location === filters.location);
+        // Apply filters
+        let filtered = workersData;
+        if (filters.skill !== 'all') filtered = filtered.filter(w => w.profile?.skills?.includes(filters.skill));
+        if (filters.experience !== 'all') filtered = filtered.filter(w => w.profile?.experience === filters.experience);
+        if (filters.location !== 'all') filtered = filtered.filter(w => w.profile?.location === filters.location);
 
-      if (loadMore) setWorkers(prev => [...prev, ...filtered]);
-      else setWorkers(filtered);
-    } catch (error) {
-      console.error(error);
-      setFeedback({ type: 'error', message: 'Failed to fetch workers.' });
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
+        if (loadMore) setWorkers(prev => [...prev, ...filtered]);
+        else setWorkers(filtered);
+      } catch (error) {
+        console.error(error);
+        setFeedback({ type: 'error', message: 'Failed to fetch workers.' });
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    },
+    [filters, lastDoc]
+  );
 
+  // Reload workers when filters change
   useEffect(() => {
     setLastDoc(null);
     fetchWorkers();
-  }, [filters]);
+  }, [filters, fetchWorkers]);
 
   const handleFilterChange = (type, value) => {
     setFilters(prev => ({ ...prev, [type]: value }));

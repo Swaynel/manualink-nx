@@ -1,16 +1,16 @@
-import { useState, useEffect, useMemo } from "react";
-import SharedModal from "../components/SharedModal";
-import SharedModalContent from "../components/SharedModalContent";
-import Link from "next/link";
-import { collection, query, orderBy, onSnapshot, where } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { useState, useEffect, useMemo } from 'react';
+import SharedModal from '../components/SharedModal';
+import SharedModalContent from '../components/SharedModalContent';
+import Link from 'next/link';
+import { collection, query, orderBy, onSnapshot, where } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 // Format dates
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return isNaN(date)
-    ? "-"
-    : date.toLocaleDateString("en-KE", { year: "numeric", month: "short", day: "numeric" });
+    ? '-'
+    : date.toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' });
 };
 
 // DataTable Component
@@ -72,8 +72,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             onClick={() => onPageChange(p)}
             className={`px-3 py-1 rounded-md text-sm font-medium ${
               currentPage === p
-                ? "bg-blue-600 text-white"
-                : "border border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
+                ? 'bg-blue-600 text-white'
+                : 'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
             }`}
           >
             {p}
@@ -92,74 +92,74 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 export default function EmployerDashboard({ currentEmployerId }) {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
   const [myJobs, setMyJobs] = useState([]);
   const [applications, setApplications] = useState([]);
-  const [modalData, setModalData] = useState({ show: false, type: "", data: null });
+  const [modalData, setModalData] = useState({ show: false, type: '', data: null });
 
   const itemsPerPage = 5;
   const [jobsPage, setJobsPage] = useState(1);
   const [applicationsPage, setApplicationsPage] = useState(1);
 
-  const [jobSearch, setJobSearch] = useState("");
-  const [applicationSearch, setApplicationSearch] = useState("");
+  const [jobSearch, setJobSearch] = useState('');
+  const [applicationSearch, setApplicationSearch] = useState('');
 
   useEffect(() => {
-    if (!currentEmployerId) return; // Guard undefined
+    if (!currentEmployerId) return;
 
     setLoading(true);
 
+    // Subscribe to jobs first
     const jobsUnsub = onSnapshot(
-      query(collection(db, "jobs"), orderBy("datePosted", "desc"), where("employerId", "==", currentEmployerId)),
+      query(collection(db, 'jobs'), where('employerId', '==', currentEmployerId), orderBy('datePosted', 'desc')),
       (snapshot) => {
         const jobsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setMyJobs(jobsData);
-        updateStats(jobsData, applications);
-        setLoading(false);
+
+        // Then subscribe to applications filtered by these jobs
+        const applicationsUnsub = onSnapshot(
+          query(collection(db, 'applications'), orderBy('appliedDate', 'desc')),
+          (appsSnapshot) => {
+            const appsData = appsSnapshot.docs
+              .map((doc) => ({ id: doc.id, ...doc.data() }))
+              .filter((app) => jobsData.some((job) => job.id === app.jobId));
+            setApplications(appsData);
+            updateStats(jobsData, appsData);
+            setLoading(false);
+          }
+        );
+
+        return () => applicationsUnsub();
       }
     );
 
-    const applicationsUnsub = onSnapshot(
-      query(collection(db, "applications"), orderBy("appliedDate", "desc")),
-      (snapshot) => {
-        const appsData = snapshot.docs
-          .map((doc) => ({ id: doc.id, ...doc.data() }))
-          .filter((app) => myJobs.some((job) => job.id === app.jobId)); // Only employer's jobs
-        setApplications(appsData);
-        updateStats(myJobs, appsData);
-      }
-    );
-
-    return () => {
-      jobsUnsub();
-      applicationsUnsub();
-    };
-  }, [currentEmployerId, myJobs]);
+    return () => jobsUnsub();
+  }, [currentEmployerId]);
 
   const updateStats = (jobs, applications) => {
     setStats({
       totalApplications: applications.length,
-      activeJobs: jobs.filter((j) => j.status === "active").length,
-      completedJobs: jobs.filter((j) => j.status === "completed").length,
-      pendingApplications: applications.filter((a) => a.status === "pending").length,
+      activeJobs: jobs.filter((j) => j.status === 'active').length,
+      completedJobs: jobs.filter((j) => j.status === 'completed').length,
+      pendingApplications: applications.filter((a) => a.status === 'pending').length,
     });
   };
 
   const openModal = (type, data) => setModalData({ show: true, type, data });
-  const closeModal = () => setModalData({ show: false, type: "", data: null });
+  const closeModal = () => setModalData({ show: false, type: '', data: null });
 
   const jobColumns = [
-    { key: "title", title: "Job Title", render: (job) => <p className="font-medium">{job.title}</p> },
-    { key: "location", title: "Location" },
+    { key: 'title', title: 'Job Title', render: (job) => <p className="font-medium">{job.title}</p> },
+    { key: 'location', title: 'Location' },
     {
-      key: "status",
-      title: "Status",
+      key: 'status',
+      title: 'Status',
       render: (job) => (
         <span
           className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            job.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+            job.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
           }`}
         >
           {job.status}
@@ -167,11 +167,11 @@ export default function EmployerDashboard({ currentEmployerId }) {
       ),
     },
     {
-      key: "actions",
-      title: "Actions",
+      key: 'actions',
+      title: 'Actions',
       render: (job) => (
         <button
-          onClick={() => openModal("job", job)}
+          onClick={() => openModal('job', job)}
           className="px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full"
         >
           View
@@ -181,17 +181,17 @@ export default function EmployerDashboard({ currentEmployerId }) {
   ];
 
   const applicationColumns = [
-    { key: "workerName", title: "Worker Name" },
-    { key: "jobTitle", title: "Job Applied For" },
-    { key: "appliedDate", title: "Applied Date", render: (app) => formatDate(app.appliedDate) },
+    { key: 'workerName', title: 'Worker Name' },
+    { key: 'jobTitle', title: 'Job Applied For' },
+    { key: 'appliedDate', title: 'Applied Date', render: (app) => formatDate(app.appliedDate) },
     {
-      key: "status",
-      title: "Status",
+      key: 'status',
+      title: 'Status',
       render: (app) => (
         <button
-          onClick={() => openModal("application", app)}
+          onClick={() => openModal('application', app)}
           className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            app.status === "pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"
+            app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'
           }`}
         >
           {app.status}
@@ -201,7 +201,12 @@ export default function EmployerDashboard({ currentEmployerId }) {
   ];
 
   const filteredJobs = useMemo(
-    () => myJobs.filter((j) => j.title.toLowerCase().includes(jobSearch.toLowerCase()) || j.location.toLowerCase().includes(jobSearch.toLowerCase())),
+    () =>
+      myJobs.filter(
+        (j) =>
+          j.title.toLowerCase().includes(jobSearch.toLowerCase()) ||
+          j.location.toLowerCase().includes(jobSearch.toLowerCase())
+      ),
     [myJobs, jobSearch]
   );
 
@@ -220,7 +225,7 @@ export default function EmployerDashboard({ currentEmployerId }) {
     if (loading) return <div className="bg-white p-8 rounded-lg shadow-sm border text-center">Loading dashboard...</div>;
 
     switch (activeTab) {
-      case "overview":
+      case 'overview':
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-sm border flex justify-between items-center">
@@ -253,7 +258,7 @@ export default function EmployerDashboard({ currentEmployerId }) {
             </div>
           </div>
         );
-      case "jobs":
+      case 'jobs':
         return (
           <>
             <h2 className="text-2xl font-bold mb-4">My Jobs</h2>
@@ -272,7 +277,7 @@ export default function EmployerDashboard({ currentEmployerId }) {
             />
           </>
         );
-      case "applications":
+      case 'applications':
         return (
           <>
             <h2 className="text-2xl font-bold mb-4">Worker Applications</h2>
@@ -305,7 +310,7 @@ export default function EmployerDashboard({ currentEmployerId }) {
             <p className="text-gray-600">Track your jobs and worker applications</p>
           </div>
           <Link href="/" className="text-blue-600 hover:text-blue-800 font-medium">
-            ← Back to Home
+            &larr; Back to Home
           </Link>
         </div>
       </div>
@@ -314,14 +319,14 @@ export default function EmployerDashboard({ currentEmployerId }) {
         <div className="lg:w-64 flex-shrink-0">
           <nav className="bg-white rounded-lg shadow-sm border p-4">
             <ul className="space-y-2">
-              {["overview", "jobs", "applications"].map((tab) => (
+              {['overview', 'jobs', 'applications'].map((tab) => (
                 <li key={tab}>
                   <button
                     onClick={() => setActiveTab(tab)}
                     className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
                       activeTab === tab
-                        ? "bg-blue-50 text-blue-700 border border-blue-200"
-                        : "text-gray-700 hover:bg-gray-50"
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
