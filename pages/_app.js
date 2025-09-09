@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import Layout from '../components/Layout';
@@ -29,11 +30,20 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <Layout currentUser={currentUser} setActiveModal={setActiveModal}>
-      {/* Modals shared across the app */}
-      <Modals activeModal={activeModal} setActiveModal={setActiveModal} />
-      <Component {...pageProps} currentUser={currentUser} />
-    </Layout>
+    <>
+      <Head>
+        {/* PWA essentials */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1E40AF" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+      </Head>
+
+      <Layout currentUser={currentUser} setActiveModal={setActiveModal}>
+        {/* Modals shared across the app */}
+        <Modals activeModal={activeModal} setActiveModal={setActiveModal} />
+        <Component {...pageProps} currentUser={currentUser} />
+      </Layout>
+    </>
   );
 }
 
