@@ -81,7 +81,7 @@ export default function About() {
             <h2 className="text-3xl font-bold mb-6 text-center">Our Story</h2>
             <div className="text-gray-600 space-y-4">
               <p>
-                {'ManuaLink was founded in 2023 in response to the growing need for a reliable platform connecting skilled manual workers with employers across Kenya.'}
+                {'ManuaLink was founded in 2025 in response to the growing need for a reliable platform connecting skilled manual workers with employers across Kenya.'}
               </p>
               <p>
                 {'Our founders witnessed firsthand the challenges faced by both workers seeking consistent employment and employers struggling to find qualified, reliable help for construction, farming, cleaning, and other manual work.'}
