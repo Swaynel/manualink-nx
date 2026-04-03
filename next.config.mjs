@@ -1,18 +1,5 @@
-// next.config.mjs
-import nextPWA from "next-pwa";
-
 /** @type {import('next').NextConfig} */
-const withPWA = nextPWA({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
-  fallbacks: {
-    document: "/_offline", // <- our offline page
-  },
-});
-
-const nextConfig = withPWA({
+const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -22,13 +9,6 @@ const nextConfig = withPWA({
       },
     ],
   },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.(png|jpg|jpeg|gif|svg)$/,
-      type: "asset/resource",
-    });
-    return config;
-  },
-});
+};
 
 export default nextConfig;
