@@ -1,8 +1,8 @@
-# ManuaLink
+# manualink-nx
 
 ## 🔗 Connecting Manual Workers with Opportunities Across Kenya
 
-**ManuaLink** is a modern Next.js web application that bridges the gap between skilled manual workers and employers across Kenya. Built with cutting-edge technology to provide a seamless experience for finding reliable workers or discovering manual work opportunities in Nairobi, Mombasa, Kisumu, and beyond.
+**manualink-nx** is a modern Next.js web application that bridges the gap between skilled manual workers and employers across Kenya. Built with cutting-edge technology to provide a seamless experience for finding reliable workers or discovering manual work opportunities in Nairobi, Mombasa, Kisumu, and beyond.
 
 ## 🚀 Tech Stack
 
@@ -69,8 +69,8 @@ PostgreSQL (or preferred database)
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/manualink.git
-cd manualink
+git clone https://github.com/your-username/manualink-nx.git
+cd manualink-nx
 ```
 
 2. **Install dependencies**
@@ -109,7 +109,7 @@ Visit [http://localhost:3000](http://localhost:3000) to see the application.
 ## 📁 Project Structure
 
 ```
-manualink/
+manualink-nx/
 ├── app/                    # Next.js 13+ App Router
 │   ├── (auth)/            # Authentication routes
 │   ├── dashboard/         # User dashboards
@@ -217,8 +217,8 @@ vercel --prod
 
 ### Docker
 ```bash
-docker build -t manualink .
-docker run -p 3000:3000 manualink
+docker build -t manualink-nx .
+docker run -p 3000:3000 manualink-nx
 ```
 
 ## 🤝 Contributing
@@ -235,7 +235,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## 🌍 Community Impact
 
-ManuaLink contributes to Kenya's digital transformation by:
+manualink-nx contributes to Kenya's digital transformation by:
 
 - **Digitalizing Traditional Work**: Bringing manual labor into the digital economy
 - **Economic Empowerment**: Creating sustainable income opportunities
@@ -245,10 +245,10 @@ ManuaLink contributes to Kenya's digital transformation by:
 
 ## 📞 Support & Contact
 
-- **Documentation**: [docs.manualink.co.ke](https://docs.manualink.co.ke)
-- **Issues**: [GitHub Issues](https://github.com/your-username/manualink/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/manualink/discussions)
-- **Email**: support@manualink.co.ke
+- **Documentation**: [docs.manualink-nx.co.ke](https://docs.manualink-nx.co.ke)
+- **Issues**: [GitHub Issues](https://github.com/your-username/manualink-nx/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-username/manualink-nx/discussions)
+- **Email**: support@manualink-nx.co.ke
 
 ## 🗺️ Roadmap
 
@@ -260,6 +260,6 @@ ManuaLink contributes to Kenya's digital transformation by:
 
 ---
 
-**ManuaLink** - *Linking Skills with Opportunities* 🇰🇪
+**manualink-nx** - *Linking Skills with Opportunities* 🇰🇪
 
 Built with ❤️ using Next.js
